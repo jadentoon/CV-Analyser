@@ -32,5 +32,5 @@ async def upload_cv(file : UploadFile):
 @app.post("/upload_job/")
 async def upload_job(job : JobDescription):
     #Placeholder - only returns text.
-    return {"Job Description": job.text}
+    return {"job_text": job.text}
 

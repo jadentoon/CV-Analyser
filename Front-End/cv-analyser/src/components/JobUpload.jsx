@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
+import axios from "axios";
+
 
 const JobUpload = () => {
-    const [text, setText] = useState("");
+    const [jobText, setJobText] = useState("");
+
+    const handleUpload = async () => {
+        if (!jobText.trim()) return alert("Please input a job description.");
+        const res = await axios.post("http://localhost:8000/upload_job/", {text:jobText});
+        alert(`Saved job description: ${res.data.job_text.substring(0, 50)}`);
+    }
+
     return (
         <div>
             <textarea
             className='border p-2 w-full'
             rows={5}
             placeholder='Paste Job Description here...'
-            value={text}
-            onChange={e => setText(e.target.value)}
+            value={jobText}
+            onChange={e => setJobText(e.target.value)}
             />
-            <button className='mt-2 px-3 py-1 bg-green-500 text-white rounded cursor-pointer'>Upload Job</button>
+            <button className='mt-2 px-3 py-1 bg-green-500 text-white rounded cursor-pointer' onClick={handleUpload}>Upload Job</button>
 
         </div>
     )
