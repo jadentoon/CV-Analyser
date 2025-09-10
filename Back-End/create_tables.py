@@ -1,3 +1,5 @@
+#Only run once to create the 3 tables from models.py.
+
 from database import engine
 from models import Base
 

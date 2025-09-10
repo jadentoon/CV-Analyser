@@ -1,10 +1,9 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from database import SessionLocal
-
-class JobDescription(BaseModel):
-    text: str
+from models import JobDescription
+from schemas import JobDescriptionCreate, JobDescriptionResponse
 
 app = FastAPI()
 
@@ -36,8 +35,14 @@ async def upload_cv(file : UploadFile):
     #Placeholder - only returns name.
     return {"filename": file.filename}
 
-@app.post("/upload_job/")
-async def upload_job(job : JobDescription):
-    #Placeholder - only returns text.
-    return {"job_text": job.text}
+@app.post("/upload_job/", response_model=JobDescriptionResponse)
+async def upload_job(job : JobDescriptionCreate, db: Session = Depends(get_db)):
+    new_job = JobDescription(
+        user_id = job.user_id,
+        job_text = job.job_text
+    )
+    db.add(new_job)
+    db.commit()
+    db.refresh(new_job)
+    return new_job
 

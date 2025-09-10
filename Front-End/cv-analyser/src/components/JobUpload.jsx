@@ -7,8 +7,19 @@ const JobUpload = () => {
 
     const handleUpload = async () => {
         if (!jobText.trim()) return alert("Please input a job description.");
-        const res = await axios.post("http://localhost:8000/upload_job/", {text:jobText});
-        alert(`Saved job description: ${res.data.job_text.substring(0, 50)}`);
+        try {
+            const userId = 1;
+
+            const res = await axios.post("http://localhost:8000/upload_job/", {
+                user_id: userId,
+                job_text: jobText
+            });
+
+            alert(`Saved job description: ${res.data.job_text.substring(0, 50)}`);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to upload job description");
+        }
     }
 
     return (
