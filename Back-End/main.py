@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
+from database import SessionLocal
 
 class JobDescription(BaseModel):
     text: str
@@ -19,6 +19,13 @@ app.add_middleware(
     allow_methods=["*"],    
     allow_headers=["*"],     
 )
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 async def root():
