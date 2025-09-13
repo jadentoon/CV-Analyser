@@ -1,16 +1,32 @@
-import React from 'react'
 import CVUpload from './CVUpload'
 import JobUpload from './JobUpload'
 
 const Home = () => {
-  return (
-    <div className='p-10'>
-        <h1 className='font-bold text-3xl mb-4'>CV Analyser</h1>
-        <CVUpload />
-        <div className='my-6'></div>
-        <JobUpload />
-    </div>
-  )
+    return (
+        <main className='min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 p-10 flex justify-center'>
+            <div className='w-full max-w-3xl'>
+                <h1 className='font-bold text-4xl text-gray-800 mb-10 text-center'>
+                    CV Analyser
+                </h1>
+
+                <div className='flex flex-col gap-8'>
+                    <div className='bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transition'>
+                        <h2 className='text-2xl font-semibold text-gray-700 mb-4 flex items-center gap-2'>
+                            📑 Upload your CV
+                        </h2>
+                        <CVUpload />
+                    </div>
+
+                    <div className='bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transition'>
+                        <h2 className='text-2xl font-semibold text-gray-700 mb-4 flex items-center gap-2'>
+                            💼 Paste Job Description here
+                        </h2>
+                        <JobUpload />
+                    </div>
+                </div>
+            </div>
+        </main>
+    )
 }
 
 export default Home
