@@ -47,6 +47,7 @@ async def upload_cv(file : UploadFile, user_id: int = Form(...), db: Session = D
     
     new_cv = CVs(
         user_id = user_id,
+        filename = file.filename,
         cv_text = extracted_text
     )
     db.add(new_cv)
@@ -55,7 +56,7 @@ async def upload_cv(file : UploadFile, user_id: int = Form(...), db: Session = D
     return {
         "message" : "CV uploaded and processed successfully",
         "cv_id": new_cv.id,
-        "filename": file.filename,
+        "filename": new_cv.filename,
         "sample_text": extracted_text[:200]
     }
 

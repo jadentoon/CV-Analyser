@@ -16,6 +16,7 @@ class CVs(Base):
     __tablename__ = "cvs"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
+    filename = Column(String)
     cv_text = Column(Text)
     upload_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
