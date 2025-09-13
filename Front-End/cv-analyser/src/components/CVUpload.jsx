@@ -80,6 +80,7 @@ const CVUpload = () => {
             setMessage("❌ Upload failed. Try Again.");
         } finally {
             setIsUploading(false);
+            setTimeout(() => setUploadProgress(0), 500);
         }
     }
 
