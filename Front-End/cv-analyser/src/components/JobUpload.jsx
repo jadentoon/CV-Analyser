@@ -1,37 +1,64 @@
 import React, { useState } from 'react'
 import axios from "axios";
+import {Loader2} from "lucide-react"
 
 
 const JobUpload = () => {
     const [jobText, setJobText] = useState("");
+    const [message, setMessage] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleUpload = async () => {
-        if (!jobText.trim()) return alert("Please input a job description.");
+
         try {
-            const userId = 1;
+            setMessage("");
+            setIsUploading(true);
 
             const res = await axios.post("http://localhost:8000/upload_job/", {
-                user_id: userId,
+                user_id: 1,
                 job_text: jobText
             });
-
-            alert(`Saved job description: ${res.data.job_text.substring(0, 50)}`);
-        } catch (error) {
-            console.error(error);
-            alert("Failed to upload job description");
+            setMessage("✔️ Job Description uploaded successfully.");
+            setJobText("");
+        } catch (err) {
+            setMessage("❌ Failed to upload job description");
+        } finally {
+            setIsUploading(false);
         }
-    }
+    };
 
     return (
-        <div>
+        <div className='flex flex-col gap-4'>
             <textarea
-            className='border p-2 w-full'
-            rows={5}
-            placeholder='Paste Job Description here...'
-            value={jobText}
-            onChange={e => setJobText(e.target.value)}
+                className='border border-gray-300 rounded-lg p-3 w-full resize-none shadow-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+                        placeholder-gray-400 text-gray-700 transition'
+                rows={6}
+                placeholder='Paste Job Description here...'
+                value={jobText}
+                onChange={e => setJobText(e.target.value)}
             />
-            <button className='mt-2 px-3 py-1 bg-green-500 text-white rounded cursor-pointer' onClick={handleUpload}>Upload Job</button>
+            <button
+                onClick={handleUpload}
+                disabled={isUploading || !jobText.trim()}
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded font-medium text-white transition
+                    ${isUploading || !jobText.trim()
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-500 hover:bg-green-600 cursor-pointer"
+                    }`}
+            >
+                {isUploading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isUploading ? "Uploading..." : "Upload Job"}
+            </button>
+
+            {message && (
+                <p
+                className={`text-sm mt-1 text-center ${
+                    message.startsWith("✔️") ? "text-green-600" : "text-red-600"
+                }`}>
+                    {message}
+                </p>
+            )}
 
         </div>
     )

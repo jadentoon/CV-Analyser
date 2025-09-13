@@ -18,10 +18,6 @@ const CVUpload = () => {
     }
 
     const handleUpload = async () => {
-        if (!file) {
-            setMessage("Please select a file first.");
-            return;
-        }
 
         const extension = file.name.split(".").pop().toLowerCase();
         if (extension != 'pdf') {
@@ -51,7 +47,7 @@ const CVUpload = () => {
         <div className='flex flex-col gap-4'>
             <label className='flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 transition bg-gray-50'>
                 <p className='text-gray-500'>
-                    {file ? "File ready to upload" : "Drag & drop a PDF here of click to select"}
+                    {file ? "File ready to upload" : "Drag & drop PDF files"}
                 </p>
                 <input
                     type="file"
@@ -87,13 +83,13 @@ const CVUpload = () => {
                 onClick={handleUpload}
                 disabled={isUploading}
                 className={`px-4 py-2 rounded-lg text-white font-medium transition
-                    ${isUploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 cursor-pointer"}`}
+                    ${isUploading || !file ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 cursor-pointer"}`}
             >
                 {isUploading ? "Uploading..." : "Upload CV"}
             </button>
 
             {message && (
-                <p className={`text-sm ${message.startsWith("✔️") ? "text-green-600" : "text-red-600"} >`}>
+                <p className={`text-sm text-center ${message.startsWith("✔️") ? "text-green-600" : "text-red-600"} >`}>
                     {message}
                 </p>
             )}
