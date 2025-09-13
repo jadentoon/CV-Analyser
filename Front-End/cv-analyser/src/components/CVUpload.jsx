@@ -7,6 +7,7 @@ const CVUpload = () => {
 
     const handleUpload = async () => {
         if (!file) return;
+
         const extension = file.name.split(".").pop().toLowerCase();
         if (extension != 'pdf') {
             setMessage("Please select a PDF file.")
@@ -14,6 +15,7 @@ const CVUpload = () => {
             setMessage("")
             const formData = new FormData();
             formData.append("file", file);
+            formData.append("user_id", 1)
 
             const res = await axios.post("http://localhost:8000/upload_cv/", formData);
             setMessage(`Uploaded: ${res.data.filename}`);
