@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import {Trash2,NotepadText} from "lucide-react";
+import { Trash2, NotepadText,UploadCloud } from "lucide-react";
 
 const CVUpload = () => {
     const [file, setFile] = useState(null);
@@ -46,9 +46,11 @@ const CVUpload = () => {
     return (
         <div className='flex flex-col gap-4'>
             <label className='flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 transition bg-gray-50'>
-                <p className='text-gray-500'>
-                    {file ? "File ready to upload" : "Drag & drop PDF files"}
-                </p>
+                <div className='flex flex-col items-center'>
+                    <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
+                    <p className='font-semibold text-gray-700'>Browse Files</p>
+                    <p className='text-sm text-gray-500'>Drag and drop files here</p>
+                </div>
                 <input
                     type="file"
                     accept='.pdf'
