@@ -7,6 +7,7 @@ const CVUpload = () => {
     const [message, setMessage] = useState("");
     const [isUploading, setIsUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     useEffect(() => {
         const handleWindowDragOver = (e) => e.preventDefault();
@@ -44,27 +45,35 @@ const CVUpload = () => {
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files?.[0] || null;
-        if (validateFile(selectedFile)){
+        if (validateFile(selectedFile)) {
             setFile(selectedFile);
             setMessage("");
         }
     };
 
     const handleUpload = async () => {
-        if(!validateFile(file)){
+        if (!validateFile(file)) {
             setMessage("Please select a valid PDF file.");
             return;
         }
 
         setMessage("");
         setIsUploading(true);
+        setUploadProgress(0);
 
         try {
             const formData = new FormData();
             formData.append("file", file);
             formData.append("user_id", 1)
 
-            const res = await axios.post("http://localhost:8000/upload_cv/", formData);
+            const res = await axios.post("http://localhost:8000/upload_cv/", formData, {
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    setUploadProgress(percent);
+                }
+            });
             setMessage(`✔️ Uploaded: ${res.data.filename}`);
             setFile(null);
         } catch (err) {
@@ -124,14 +133,25 @@ const CVUpload = () => {
                 </div>
             )}
 
-            <button
-                onClick={handleUpload}
-                disabled={isUploading}
-                className={`px-4 py-2 rounded-lg text-white font-medium transition
+            <div className='flex flex-col gap-2'>
+                <button
+                    onClick={handleUpload}
+                    disabled={isUploading || !file}
+                    className={`px-4 py-2 rounded-lg text-white font-medium transition
                     ${isUploading || !file ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 cursor-pointer"}`}
-            >
-                {isUploading ? "Uploading..." : "Upload CV"}
-            </button>
+                >
+                    {isUploading ? `Uploading ${uploadProgress}%` : "Upload CV"}
+                </button>
+
+                {isUploading && (
+                    <div className='w-full bg-gray-200 rounded-lg h-4 overflow-hidden'>
+                        <div 
+                            className='bg-blue-500 h-4 transition-all duration-300 ease-in-out'
+                            style={{width: `${uploadProgress}%`}}
+                        />
+                    </div>
+                )}
+            </div>
 
             {message && (
                 <p className={`text-sm text-center ${message.startsWith("✔️") ? "text-green-600" : "text-red-600"}`}>
