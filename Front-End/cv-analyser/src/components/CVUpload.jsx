@@ -8,25 +8,51 @@ const CVUpload = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
 
+    useEffect(() => {
+        const handleWindowDragOver = (e) => e.preventDefault();
+        const handleWindowDrop = (e) => e.preventDefault();
+
+        window.addEventListener("dragover", handleWindowDragOver);
+        window.addEventListener("drop", handleWindowDrop);
+
+        return () => {
+            window.removeEventListener("dragover", handleWindowDragOver);
+            window.removeEventListener("drop", handleWindowDrop);
+        }
+    }, []);
+
+    const validateFile = (selectedFile) => {
+        if (!selectedFile) return false;
+
+        if (selectedFile.type !== "application/pdf") {
+            setMessage("Please select a PDF file.");
+            return false;
+        }
+        return true;
+    };
+
     const handleDrop = (e) => {
         e.preventDefault();
         setIsDragging(false);
 
         const droppedFile = e.dataTransfer.files[0];
-        if (droppedFile) {
-            if (droppedFile.type !== "application/pdf") {
-                setMessage("Please select a PDF file.");
-                return;
-            }
+        if (validateFile(droppedFile)) {
             setFile(droppedFile);
             setMessage("");
         }
     };
 
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files?.[0] || null;
+        if (validateFile(selectedFile)){
+            setFile(selectedFile);
+            setMessage("");
+        }
+    };
+
     const handleUpload = async () => {
-        const extension = file.name.split(".").pop().toLowerCase();
-        if (extension != 'pdf') {
-            setMessage("Please select a PDF file.");
+        if(!validateFile(file)){
+            setMessage("Please select a valid PDF file.");
             return;
         }
 
@@ -69,10 +95,7 @@ const CVUpload = () => {
                     type="file"
                     accept='.pdf'
                     className='hidden'
-                    onChange={(e) => {
-                        setFile(e.target.files?.[0] || null);
-                        setMessage("");
-                    }}
+                    onChange={handleFileChange}
                 />
             </label>
 
