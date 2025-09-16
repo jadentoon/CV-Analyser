@@ -10,28 +10,36 @@ const JobUpload = () => {
     const [uploadProgress, setUploadProgress] = useState(0);
 
     const handleUpload = async () => {
+        if (!jobText.trim()) {
+            setMessage("Job Description cannot be empty.");
+            return;
+        }
 
         try {
             setMessage("");
             setIsUploading(true);
+            setUploadProgress(0);
 
-            await axios.post("http://localhost:8000/upload_job/", {
-                user_id: 1,
-                job_text: jobText
-            }, {
-                onUploadProgress: (progressEvent) => {
-                    const percent = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    setUploadProgress(percent);
-                }
-            });
+            await axios.post("http://localhost:8000/upload_job/",
+                {
+                    user_id: 1,
+                    job_text: jobText
+                },
+                {
+                    onUploadProgress: (progressEvent) => {
+                        const percent = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total
+                        );
+                        setUploadProgress(percent);
+                    }
+                });
             setMessage("✔️ Job Description uploaded successfully.");
             setJobText("");
         } catch (err) {
             setMessage("❌ Failed to upload job description");
         } finally {
             setIsUploading(false);
+            setTimeout(() => setUploadProgress(0), 500);
         }
     };
 
@@ -59,12 +67,12 @@ const JobUpload = () => {
                     {isUploading && <Loader2 className="w-4 h-4 animate-spin" />}
                     {isUploading ? "Uploading..." : "Upload Job"}
                 </button>
-                
+
                 {isUploading && (
                     <div className='w-full bg-gray-200 rounded-lg h-4 overflow-hidden'>
                         <div
                             className='bg-blue-500 h-4 transition-all duration-300 ease-in-out'
-                            style={{width: `${uploadProgress}%`}}
+                            style={{ width: `${uploadProgress}%` }}
                         />
                     </div>
                 )}
