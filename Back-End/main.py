@@ -1,11 +1,11 @@
 from fastapi import FastAPI, UploadFile, Depends,Form
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from utils.pdf_reader import extract_text_from_pdf
 from database import SessionLocal
 from models import JobDescription, CVs
 from schemas import JobDescriptionCreate, JobDescriptionResponse
-import PyPDF2
-import io
+
 
 app = FastAPI()
 
@@ -35,12 +35,8 @@ async def root():
 @app.post("/upload_cv/")
 async def upload_cv(file : UploadFile, user_id: int = Form(...), db: Session = Depends(get_db)):
     file_bytes = await file.read()
-    pdf_file = io.BytesIO(file_bytes)
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
-
-    extracted_text = ""
-    for page in pdf_reader.pages:
-        extracted_text += page.extract_text() + "\n"
+    
+    extracted_text = extract_text_from_pdf(file_bytes)
     
     if not extracted_text.strip():
         return {"error" : "No text could be extracted from the PDF."}
