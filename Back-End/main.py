@@ -91,7 +91,7 @@ async def match_cv_and_job(user_id: int = Form(...), db: Session = Depends(get_d
 
     return {
         "message": "Match score calculated successfully",
-        "cv_id": latest_cv.id,
-        "job_id": latest_job.id,
+        "cv_filename": latest_cv.filename,
+        "job_title": latest_job.job_title,
         "score": score
     }

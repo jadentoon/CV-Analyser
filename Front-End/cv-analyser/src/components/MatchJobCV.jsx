@@ -71,7 +71,7 @@ const MatchJobCV = () => {
                                 Match Score: <span className='text-blue-500'>{matchResult.score}%</span>
                             </p>
                             <p className='text-sm text-gray-600 mt-1'>
-                                CV ID: {matchResult.cv_id} | Job ID: {matchResult.job_id}
+                                CV Filename: <span className='font-semibold'>{matchResult.cv_filename}</span> | Job Title: <span className='font-semibold'>{matchResult.job_title}</span>
                             </p>
                         </>
                     )}
