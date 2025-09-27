@@ -5,7 +5,7 @@ from utils.pdf_reader import extract_text_from_pdf
 from database import SessionLocal
 from models import JobDescription, CVs
 from schemas import JobDescriptionCreate, JobDescriptionResponse
-
+from ml.matching import calculate_match_score
 
 app = FastAPI()
 
@@ -68,3 +68,30 @@ async def upload_job(job : JobDescriptionCreate, db: Session = Depends(get_db)):
     db.refresh(new_job)
     return new_job
 
+@app.post("/match/")
+async def match_cv_and_job(user_id: int = Form(...), db: Session = Depends(get_db)):
+    latest_cv = (
+        db.query(CVs)
+        .filter(CVs.user_id == user_id)
+        .order_by(CVs.upload_date.desc())
+        .first()
+    )
+
+    latest_job = (
+        db.query(JobDescription)
+        .filter(JobDescription.user_id == user_id)
+        .order_by(JobDescription.upload_date.desc())
+        .first()
+    )
+
+    if not latest_cv or not latest_job:
+        return {"error": "Please upload both a CV and a Job Description first."}
+    
+    score = calculate_match_score(latest_cv.cv_text, latest_job.job_text)
+
+    return {
+        "message": "Match score calculated successfully",
+        "cv_id": latest_cv.id,
+        "job_id": latest_job.id,
+        "score": score
+    }

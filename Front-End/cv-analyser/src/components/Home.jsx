@@ -1,5 +1,6 @@
 import CVUpload from './CVUpload'
 import JobUpload from './JobUpload'
+import MatchJobCV from './MatchJobCV'
 
 const Home = () => {
     return (
@@ -22,6 +23,13 @@ const Home = () => {
                             💼 Paste Job Description here
                         </h2>
                         <JobUpload />
+                    </div>
+
+                    <div className='bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transition'>
+                        <h2 className='text-2xl font-semibold text-gray-700 mb-4 flex items-center gap-2'>
+                            Match CV to Job
+                        </h2>
+                        <MatchJobCV />
                     </div>
                 </div>
             </div>
