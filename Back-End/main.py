@@ -60,6 +60,7 @@ async def upload_cv(file : UploadFile, user_id: int = Form(...), db: Session = D
 async def upload_job(job : JobDescriptionCreate, db: Session = Depends(get_db)):
     new_job = JobDescription(
         user_id = job.user_id,
+        job_title = job.job_title,
         job_text = job.job_text
     )
     db.add(new_job)

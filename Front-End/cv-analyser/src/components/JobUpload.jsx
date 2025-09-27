@@ -5,13 +5,14 @@ import { Loader2 } from "lucide-react"
 
 const JobUpload = () => {
     const [jobText, setJobText] = useState("");
+    const [jobTitle, setJobTitle] = useState("");
     const [message, setMessage] = useState("");
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
 
     const handleUpload = async () => {
-        if (!jobText.trim()) {
-            setMessage("Job Description cannot be empty.");
+        if (!jobText.trim() || !jobTitle.trim()) {
+            setMessage("Job Description and Job Title cannot be empty.");
             return;
         }
 
@@ -23,6 +24,7 @@ const JobUpload = () => {
             await axios.post("http://localhost:8000/upload_job/",
                 {
                     user_id: 1,
+                    job_title: jobTitle,
                     job_text: jobText
                 },
                 {
@@ -34,6 +36,7 @@ const JobUpload = () => {
                     }
                 });
             setMessage("✔️ Job Description uploaded successfully.");
+            setJobTitle("");
             setJobText("");
         } catch (err) {
             setMessage("❌ Failed to upload job description");
@@ -45,6 +48,17 @@ const JobUpload = () => {
 
     return (
         <div className='flex flex-col gap-4'>
+
+            <input 
+                type="text" 
+                placeholder='Enter Job Title' 
+                className='border border-gray-300 rounded-lg p-2 w-full shadow-sm focus:outline-none
+                            focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+                            placeholder-gray-400 text-gray-700 transition'
+                value={jobTitle}
+                onChange={e => setJobTitle(e.target.value)}
+            />
+
             <textarea
                 className='border border-gray-300 rounded-lg p-3 w-full resize-none shadow-sm
                         focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400

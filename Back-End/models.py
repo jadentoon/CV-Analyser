@@ -26,6 +26,7 @@ class JobDescription(Base):
     __tablename__ = "job_descriptions"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
+    job_title = Column(String)
     job_text = Column(Text)
     upload_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
