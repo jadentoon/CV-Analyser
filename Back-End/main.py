@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from utils.pdf_reader import extract_text_from_pdf
 from database import SessionLocal
 from models import JobDescription, CVs
-from schemas import JobDescriptionCreate, JobDescriptionResponse
+from schemas import JobDescriptionCreate, JobDescriptionResponse, CVResponse
 from ml.matching import calculate_match_score
+from typing import List
 
 app = FastAPI()
 
@@ -31,6 +32,16 @@ def get_db():
 @app.get("/")
 async def root():
     return {"message":"API is working as intended."}
+
+@app.get("/cvs/{user_id}", response_model=List[CVResponse])
+async def get_cvs(user_id: int, db: Session = Depends(get_db)):
+    cvs = (
+        db.query(CVs)
+        .filter(CVs.user_id == user_id)
+        .all()
+    )
+    return cvs
+
 
 @app.post("/upload_cv/")
 async def upload_cv(file : UploadFile, user_id: int = Form(...), db: Session = Depends(get_db)):

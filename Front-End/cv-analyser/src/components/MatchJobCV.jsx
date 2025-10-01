@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from "axios";
 
 
 const MatchJobCV = () => {
+    const [cvs, setCvs] = useState([]);
     const [matchResult, setMatchResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [matchProgress, setMatchProgress] = useState(0);
+    const userId = 1;
+
+    useEffect(() => {
+        axios.get(`http://localhost:8000/cvs/${userId}`).then((res) => setCvs(res.data))
+    }, [])
 
     const handleMatch = async () => {
         try {
